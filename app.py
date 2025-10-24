@@ -9,8 +9,8 @@ def home():
 @app.route('/shop')
 def shop():
     products = [
-        {"id": 1, "name": "Product 1", "price": 19.99, "image": "images/p1.png"},
-        {"id": 2, "name": "Product 2", "price": 29.99, "image": "images/p2.png"},
+        {"id": 1, "name": "Product 1", "price": 19.99, "image": "/static/images/p1.png"},
+        {"id": 2, "name": "Product 2", "price": 29.99, "image": "/static/images/p2.png"},
     ]
     return render_template('shop.html', products=products)
 

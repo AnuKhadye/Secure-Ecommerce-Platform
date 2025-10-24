@@ -1,0 +1,106 @@
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+  margin: 0px
+}
+
+/* Header & Navbar */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  padding: 0 30px;
+  height: 80px; /* navbar height */
+}
+
+#products {
+    margin: 15px;
+}
+
+
+header h1 {
+  font-size: 1.5rem;
+  color: white;
+  /* margin: 0px; */
+}
+
+/* Navbar menu */
+nav ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 15px;          /* spacing between nav items */
+}
+
+nav ul li a {
+  display: flex;
+  align-items: center;
+  height: 100%;        /* fills navbar height */
+  color: white;
+  text-decoration: none;
+  padding: 0 10px;
+  transition: background-color 0.3s;
+}
+
+nav ul li:hover a {
+  background-color: #ff6600;
+  border-radius: 5px; /* smooth hover effect */
+}
+
+/* Products Section */
+.product-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.product-item {
+  flex: 1 1 200px;          /* responsive width */
+  max-width: 250px;          /* optional max size */
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;        /* center content */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: #fff;    /* ensures contrast */
+  transition: transform 0.2s;
+}
+
+.product-item:hover {
+  transform: translateY(-5px); /* subtle hover effect */
+}
+
+.product-item img {
+  width: 100%;           /* scales with card */
+  max-width: 150px;      /* prevents huge images */
+  height: 150px;         
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #000;
+  margin-bottom: 10px;
+}
+
+/* Responsive: stack products on small screens */
+@media (max-width: 600px) {
+  .product-list {
+    justify-content: center;
+  }
+
+  .product-item {
+    flex: 1 1 100%;      /* full width on mobile */
+    max-width: 300px;
+  }
+
+  nav ul {
+    flex-direction: column; /* stack nav items */
+    gap: 10px;
+  }
+
+  header {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+  }
+}
