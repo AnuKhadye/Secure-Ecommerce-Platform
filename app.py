@@ -1,6 +1,8 @@
 from flask import Flask, render_template
+from db.database import Database
 
 app = Flask(__name__)
+db = Database()
 
 @app.route('/')
 def home():
@@ -8,11 +10,8 @@ def home():
 
 @app.route('/shop')
 def shop():
-    products = [
-        {"id": 1, "name": "Product 1", "price": 19.99, "image": "/static/images/p1.png"},
-        {"id": 2, "name": "Product 2", "price": 29.99, "image": "/static/images/p2.png"},
-    ]
-    return render_template('shop.html', products=products)
+    products = db.get_all_products()
+    return render_template('shop.html', products = products)
 
 @app.route('/cart')
 def cart():
