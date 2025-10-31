@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class Database:
     def __init__(self, db_path = 'database.db', schema_path = 'schema.sql'):
@@ -23,6 +24,12 @@ class Database:
         conn.commit()
         conn.close()
         print("Database Initialised Sucessfully")
+
+    def list_tables(self):
+        with self.connect() as conn:
+            result = conn.execute("SELECT name FROM sqlite_master WHERE type='table';").fetchall()
+        return [row['name'] for row in result]
+
 
 
     # PRODUCTS section
@@ -57,15 +64,27 @@ class Database:
     
     # USER Section
 
-    def add_user(self, username, password):
+    def add_user(self, username, password, role = 'user'):
+        hashed_pw = generate_password_hash(password)
         with self.connect() as conn:
             conn.execute(
-                "INSERT INTO users (username, password) VALUES (?, ?)",
-                (username, password)
+                "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+                (username, hashed_pw, role)
             )
             conn.commit()
         print(f"User created {username}")
 
+    def get_user_by_username(self, username):
+        with self.connect() as conn:
+            user = conn.execute("SELECT * FROM users where username = ?", (username, )).fetchone()
+
+        return dict (user) if user else None
+    
+    def validate_user(self, username, password):
+        user = self.get_user_by_username(username)
+        if user and check_password_hash(user['password'], password):
+            return user
+        return None
 
     def show_all_users(self):
         with self.connect() as conn:
@@ -75,4 +94,52 @@ class Database:
             conn.commit()
 
         return [row["username"]for row in users ]
+    
+
+    # Cart Section
+
+    def add_to_cart(self, user_id, product_id, quantity=1):
+        with self.connect() as conn:
+            existing = conn.execute(
+                "SELECT quantity from cart_items where user_id = ? AND product_id = ?",
+                (user_id, product_id)
+            ).fetchone()
+
+            if existing:
+                conn.execute(
+                    "UPDATE cart_items SET quantity = quantity + ? WHERE user_id = ? AND product_id = ?",
+                    (quantity, user_id, product_id)
+                )
+            else:
+                conn.execute(
+                    "INSERT INTO cart_items (user_id, product_id, quantity) VALUES (?, ?, ?)",
+                    (user_id, product_id, quantity)
+                )
+            conn.commit()
+        print(f"Added product {product_id} to user {user_id}'s cart")
+
+    def get_cart(self, user_id):
+        with self.connect() as conn:
+            items = conn.execute(
+                """
+                SELECT p.id, p.name, p.price, c.quantity
+                FROM cart_items c
+                JOIN products p ON c.product_id = p.id
+                WHERE c.user_id = ?
+
+                """,
+                (user_id,)
+            ).fetchall()
+
+        return [dict(row) for row in items]
+    
+    def remove_from_cart(self, user_id, product_id):
+        with self.connect() as conn:
+            conn.execute(
+                "DELETE FROM cart_items WHERE user_id = ? AND product_id = ?",
+                (user_id, product_id)
+            )
+            conn.commit()
+
+        print(f"Removed product {product_id} from user {user_id}'s cart")
 
