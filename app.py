@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, session
 from db.database import Database
 
 app = Flask(__name__)
@@ -13,11 +13,24 @@ def shop():
     products = db.get_all_products()
     return render_template('shop.html', products = products)
 
+@app.route('/add_to_cart/<int:product_id>', methods=['POST'])
+def add_to_cart(product_id):
+    user_id = session.get('user_id', 1)  # temp: use 1 until login system works
+    db.add_to_cart(user_id, product_id)
+    return redirect(url_for('shop'))
+
 @app.route('/cart')
 def cart():
-    cart = [{"name": "Product 1", "quantity": 2, "price": 19.99}]
-    total = sum(item['price'] * item['quantity'] for item in cart)
-    return render_template('cart.html', cart=cart, total=total)
+    user_id = session.get('user_id', 1)
+    items = db.get_cart(user_id)
+    total = sum(item['price'] * item['quantity'] for item in items)
+    return render_template('cart.html', cart=items, total=total)
+    
+@app.route('/remove_from_cart/<int:product_id>', methods=['POST'])
+def remove_from_cart(product_id):
+    user_id = session.get('user_id', 1)
+    db.remove_from_cart(user_id, product_id)
+    return redirect(url_for('cart'))
 
 @app.route('/checkout')
 def checkout():
