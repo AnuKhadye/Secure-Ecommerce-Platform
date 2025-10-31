@@ -10,7 +10,7 @@
         <!-- <img src="{{ product.image }}" alt="{{ product.name }}"> -->
         <h3>{{ product.name }}</h3>
         <p>${{ product.price }}</p>
-        <form action="{{ url_for('cart', product_id=product.id) }}" method="POST">
+        <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST">
           <button type="submit">Add to Cart</button>
         </form>
       </div>
