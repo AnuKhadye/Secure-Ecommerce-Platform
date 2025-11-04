@@ -1,19 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Login | My Store{% endblock %}
-
+{% block title %}Login{% endblock %}
 {% block content %}
-<section id="login">
-  <h2>Login</h2>
-  <form action="{{ url_for('login') }}" method="POST">
-    <label>Email:</label>
-    <input type="email" name="email" required>
-
-    <label>Password:</label>
-    <input type="password" name="password" required>
-
-    <button type="submit">Login</button>
-  </form>
-
-  <p>Don’t have an account? <a href="{{ url_for('register') }}">Register here</a></p>
-</section>
+<h2>Login</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.username.label }} {{ form.username() }}<br>
+    {{ form.password.label }} {{ form.password() }}<br>
+    {{ form.submit() }}
+</form>
 {% endblock %}
