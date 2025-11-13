@@ -16,14 +16,19 @@ class Database:
         conn.row_factory = sqlite3.Row
         return conn
     
-    def initialize_database(self, schema_path = 'db/schema.sql'):
-        conn = self.connect()
-        with open(schema_path) as f:
-            conn.executescript(f.read())
+    def initialize_database(self):
+        try:
+            conn = self.connect()
+            with open(self.schema_path) as f:
+                conn.executescript(f.read())
+            conn.commit()
+            print("Database Initialised Sucessfully")
+        except Exception as e:
+            print(f"Error initializing database: {e}")
 
-        conn.commit()
-        conn.close()
-        print("Database Initialised Sucessfully")
+        finally:
+            conn.close()
+
 
     def list_tables(self):
         with self.connect() as conn:
@@ -35,53 +40,60 @@ class Database:
     # PRODUCTS section
 
     def add_product(self, name, price, description):
-        conn = self.connect()
-        conn.execute(
-            "INSERT INTO products (name, price, description) VALUES (?, ?, ?)",
-            (name, price, description)
-        )
-        
-        conn.commit()
-        conn.close()
+        with self.connect() as conn:
+            conn.execute(
+                "INSERT INTO products (name, price, description) VALUES (?, ?, ?)",
+                (name, price, description)
+            )   
+            conn.commit()
         print(f"Product {name} added.")
 
 
     def get_product(self, product_id):
-        conn = self.connect()
-        product = conn.execute(
-            "SELECT * FROM products WHERE id = ?", (product_id,)
-        ).fetchone()
-
-        conn.close()
+        with self.connect() as conn:
+            product = conn.execute(
+                "SELECT * FROM products WHERE id = ?", (product_id,)
+            ).fetchone()
         return dict(product) if product else None
     
     def get_all_products(self):
-        conn = self.connect()
-        products = conn.execute("SELECT * FROM products").fetchall()
-        
-        conn.close()
+        with self.connect() as conn:
+            products = conn.execute("SELECT * FROM products").fetchall()            
         return [dict(row) for row in products]
+    
     
     # USER Section
 
-    def add_user(self, username, password, role = 'user'):
+    def add_user(self, username, password, email, role = 'user'):
         hashed_pw = generate_password_hash(password)
-        with self.connect() as conn:
-            conn.execute(
-                "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
-                (username, hashed_pw, role)
-            )
-            conn.commit()
-        print(f"User created {username}")
+        try:
+            with self.connect() as conn:
+                conn.execute(
+                    "INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)",
+                    (username, hashed_pw, email, role)
+                )
+                conn.commit()
+            print(f"User created {username}")
+        except sqlite3.IntegrityError as e:
+            print(f"Error adding user: {e}")
 
-    def get_user_by_username(self, username):
+    def get_users_info(self):
         with self.connect() as conn:
-            user = conn.execute("SELECT * FROM users where username = ?", (username, )).fetchone()
+            rows = conn.execute("SELECT * FROM users").fetchall()
+        
+        # Convert each row to a dictionary
+        users_dict = {row['username']: dict(row) for row in rows}
+        return users_dict
 
-        return dict (user) if user else None
     
-    def validate_user(self, username, password):
-        user = self.get_user_by_username(username)
+    def get_user_by_email(self, email):
+        with self.connect() as conn:
+            user = conn.execute("SELECT * FROM users where email = ?", (email, )).fetchone()
+
+        return dict(user) if user else None
+    
+    def validate_user(self, password, email):
+        user = self.get_user_by_email(email)
         if user and check_password_hash(user['password'], password):
             return user
         return None
@@ -91,8 +103,6 @@ class Database:
             users = conn.execute(
                 "SELECT username FROM users"
             ).fetchall()
-            conn.commit()
-
         return [row["username"]for row in users ]
     
 
@@ -115,7 +125,6 @@ class Database:
                     "INSERT INTO cart_items (user_id, product_id, quantity) VALUES (?, ?, ?)",
                     (user_id, product_id, quantity)
                 )
-            conn.commit()
         print(f"Added product {product_id} to user {user_id}'s cart")
 
     def get_cart(self, user_id):
