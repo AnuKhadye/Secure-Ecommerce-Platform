@@ -65,7 +65,6 @@ class Database:
                 conn.commit()
             return True
         except sqlite3.IntegrityError as e:
-            # Likely UNIQUE constraint violation for email or username
             return False
 
     def get_users_info(self):
