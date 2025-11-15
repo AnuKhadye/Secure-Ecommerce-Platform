@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS users;
-
-
+-- USERS TABLE
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
@@ -10,6 +8,10 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- If you later need to add a column safely:
+-- ALTER TABLE users ADD COLUMN last_login TIMESTAMP;
+
+-- PRODUCTS TABLE
 CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -17,12 +19,16 @@ CREATE TABLE IF NOT EXISTS products (
     description TEXT NOT NULL
 );
 
+-- CART ITEMS TABLE
 CREATE TABLE IF NOT EXISTS cart_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     product_id INTEGER NOT NULL,
     quantity INTEGER DEFAULT 1,
-    FOREIGN KEY (user_id) REFERENCES users(id) on DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products(id) on DELETE CASCADE
-    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
+
+-- To add new columns later without losing data:
+-- ALTER TABLE products ADD COLUMN stock INTEGER DEFAULT 0;
+-- ALTER TABLE cart_items ADD COLUMN added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
