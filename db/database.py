@@ -3,7 +3,7 @@ import os
 from werkzeug.security import generate_password_hash, check_password_hash
 
 class Database:
-    def __init__(self, db_path='database.db', schema_path='C://University 3rd year//Security//6000CMD - CW//db//schema.sql'):
+    def __init__(self, db_path='database.db', schema_path='6000CMD - CW/db/schema.sql'):
         self.db_path = db_path
         self.schema_path = schema_path
 
@@ -52,6 +52,27 @@ class Database:
         with self.connect() as conn:
             products = conn.execute("SELECT * FROM products").fetchall()
         return [dict(row) for row in products]
+    
+    # REVIEWS
+    def add_review(self, user_id, product_id, comment, rating=5):
+        with self.connect() as conn:
+            conn.execute(
+                "INSERT INTO reviews (user_id, product_id, comment, rating) VALUES (?, ?, ?, ?)",
+                (user_id, product_id, comment, rating)
+            )
+            conn.commit()
+        return True
+
+    def get_reviews_for_product(self, product_id):
+        with self.connect() as conn:
+            reviews = conn.execute(
+                "SELECT r.comment, r.rating, r.created_at, u.username "
+                "FROM reviews r JOIN users u ON r.user_id = u.id "
+                "WHERE r.product_id = ? ORDER BY r.created_at DESC",
+                (product_id,)
+            ).fetchall()
+        return [dict(row) for row in reviews]
+
 
     # USERS
     def add_user(self, username, password, email, role='user'):
