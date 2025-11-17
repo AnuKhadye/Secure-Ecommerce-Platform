@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} | My Store{% endblock %}
+
+{% block content %}
+<h2>{{ product.name }}</h2>
+<p>${{ product.price }}</p>
+<p>{{ product.description }}</p>
+
+<form action="" method="POST">
+    <label>Rating (1-5):</label>
+    <input type="number" name="rating" min="1" max="5" value="5">
+    <label>Comment:</label>
+    <textarea name="comment" required></textarea>
+    <button type="submit">Submit Review</button>
+</form>
+
+<h3>Reviews:</h3>
+{% for review in reviews %}
+    <p><strong>{{ review.username }}</strong> ({{ review.rating }}/5) - {{ review.created_at }}</p>
+    <p>{{ review.comment }}</p>
+    <hr>
+{% else %}
+    <p>No reviews yet.</p>
+{% endfor %}
+{% endblock %}
