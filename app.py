@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from forms import RegisterForm, LoginForm, SetUserNameForm
 from db.database import Database
-from werkzeug.security import generate_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'SecretKey123'
@@ -16,6 +15,28 @@ def home():
 def shop():
     products = db.get_all_products()
     return render_template('shop.html', products=products)
+
+@app.route('/product/<int:product_id>', methods=['GET', 'POST'])
+def product_detail(product_id):
+    product = db.get_product(product_id)
+    if not product:
+        flash("Product not found.", "warning")
+        return redirect(url_for('shop'))
+
+    reviews = db.get_reviews_for_product(product_id)
+
+    if request.method == 'POST':
+        if not session.get('user_id'):
+            flash("You must be logged in to review.", "warning")
+            return redirect(url_for('login'))
+        comment = request.form.get('comment')
+        rating = int(request.form.get('rating', 5))
+        db.add_review(session['user_id'], product_id, comment, rating)
+        flash("Review submitted!", "success")
+        return redirect(url_for('product_detail', product_id=product_id))
+
+    return render_template('product_detail.html', product=product, reviews=reviews)
+
 
 @app.route('/cart')
 def cart():
