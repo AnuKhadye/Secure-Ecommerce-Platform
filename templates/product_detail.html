@@ -1,25 +1,83 @@
 {% extends "base.html" %}
-{% block title %}{{ product.name }} | My Store{% endblock %}
+{% block title %}{{ product.name }} | Amazing Bargain Central{% endblock %}
 
 {% block content %}
-<h2>{{ product.name }}</h2>
-<p>${{ product.price }}</p>
-<p>{{ product.description }}</p>
 
-<form action="" method="POST">
-    <label>Rating (1-5):</label>
-    <input type="number" name="rating" min="1" max="5" value="5">
-    <label>Comment:</label>
-    <textarea name="comment" required></textarea>
-    <button type="submit">Submit Review</button>
-</form>
+<div class="product-container">
 
-<h3>Reviews:</h3>
-{% for review in reviews %}
-    <p><strong>{{ review.username }}</strong> ({{ review.rating }}/5) - {{ review.created_at }}</p>
-    <p>{{ review.comment }}</p>
-    <hr>
-{% else %}
-    <p>No reviews yet.</p>
-{% endfor %}
+    <!-- PRODUCT IMAGE -->
+    <img 
+        src="{{ product.image_url if product.image_url else url_for('static', filename='placeholder.png') }}" 
+        alt="{{ product.name }}"
+        class="product-image"
+    >
+
+    <!-- PRODUCT INFO -->
+    <div class="product-info">
+        <h2>{{ product.name }}</h2>
+
+        <p class="product-price">$ {{ product.price }}</p>
+
+        <p class="product-description">{{ product.description }}</p>
+
+        <!-- ADD TO CART -->
+        <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST">
+            <button type="submit" class="btn-add-cart">Add to Cart</button>
+        </form>
+    </div>
+
+</div>
+
+
+<!-- REVIEWS SECTION -->
+<div class="reviews">
+
+    <h3>Customer Reviews</h3>
+
+    {% if reviews %}
+        {% for review in reviews %}
+            <div class="review-card">
+                <div class="review-meta">
+                    <strong>{{ review.username }}</strong> 
+                    — {{ review.created_at }}
+                </div>
+
+                <div class="review-text">
+                    {{ review.content | safe }}
+                </div>
+
+                {% if review.image_url %}
+                    <img 
+                        src="{{ review.image_url }}" 
+                        alt="Review image"
+                        style="max-width: 200px; margin-top: 10px; border-radius: 6px;"
+                    >
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No reviews yet.</p>
+    {% endif %}
+
+
+    <!-- ADD A REVIEW (ONLY IF LOGGED IN AND USER HAS BOUGHT THE PRODUCT) -->
+    {% if session.get('user_id') %}
+        <div class="review-form">
+            <h4>Leave a Review</h4>
+
+            <form action="{{ url_for('add_review', product_id=product.id) }}" method="POST" enctype="multipart/form-data">
+                <textarea name="content" placeholder="Write your review..." required></textarea>
+
+                <label>Upload an image (optional):</label><br>
+                <input type="file" name="image">
+
+                <button type="submit">Submit Review</button>
+            </form>
+        </div>
+    {% else %}
+        <p>You must <a href="{{ url_for('login') }}">log in</a> to leave a review.</p>
+    {% endif %}
+
+</div>
+
 {% endblock %}
