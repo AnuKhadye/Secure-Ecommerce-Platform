@@ -101,6 +101,119 @@ nav ul li:hover a {
   margin-bottom: 10px;
 }
 
+/* --- Product Detail Page --- */
+
+.product-container {
+    max-width: 900px;
+    margin: 40px auto;
+    display: flex;
+    gap: 40px;
+    padding: 20px;
+}
+
+.product-image {
+    width: 350px;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    background: #f9f9f9;
+}
+
+.product-info {
+    flex: 1;
+}
+
+.product-info h2 {
+    margin-bottom: 10px;
+    font-size: 28px;
+}
+
+.product-price {
+    color: #e63946;
+    font-size: 22px;
+    margin: 10px 0 20px;
+    font-weight: bold;
+}
+
+.product-description {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.btn-add-cart {
+    padding: 12px 20px;
+    background: #2a9d8f;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.btn-add-cart:hover {
+    background: #23867a;
+}
+
+/* --- Reviews Section --- */
+
+.reviews {
+    max-width: 900px;
+    margin: 40px auto;
+    border-top: 1px solid #ddd;
+    padding-top: 30px;
+}
+
+.reviews h3 {
+    margin-bottom: 15px;
+}
+
+.review-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background: #fafafa;
+}
+
+.review-meta {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.review-text {
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.review-form {
+    margin-top: 30px;
+}
+
+.review-form textarea {
+    width: 100%;
+    height: 120px;
+    padding: 10px;
+    resize: vertical;
+}
+
+.review-form button {
+    background: #1d3557;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.review-form button:hover {
+    background: #152845;
+}
+
+
 /* Responsive: stack products on small screens */
 @media (max-width: 600px) {
   .product-list {
