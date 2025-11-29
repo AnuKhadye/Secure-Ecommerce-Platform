@@ -169,6 +169,7 @@ def login():
         if user:
             session['user_id'] = user['id']
             session['username'] = user['username']
+            session['role'] = user['role']
             flash("Login successful!", "success")
             return redirect(url_for('shop'))
         else:
