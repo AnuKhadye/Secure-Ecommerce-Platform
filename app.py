@@ -35,6 +35,16 @@ def role_required(*roles):
         return decorated_function
     return wrapper
 
+@app.route('/admin')
+@login_required
+@role_required
+def admin_dashboard():
+    # Example: show all users and products
+    users = db.get_users_info()
+    products = db.get_all_products()
+    return render_template('admin_dashboard.html', users=users, products=products)
+
+
 @app.route('/')
 def home():
     products = db.get_all_products()
