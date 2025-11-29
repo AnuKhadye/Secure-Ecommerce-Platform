@@ -1,10 +1,39 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from forms import RegisterForm, LoginForm, SetUserNameForm
 from db.database import Database
+from functools import wraps
+from datetime import timedelta
 
 app = Flask(__name__)
 app.secret_key = 'SecretKey123'
+app.permanent_session_lifetime = timedelta(minutes=30)
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+    SESSION_COOKIE_SECURE=False  # True if HTTPS
+)
+
 db = Database()
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash("Please log in to access this page.", "warning")
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def role_required(*roles):
+    def wrapper(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if session.get('role') not in roles:
+                flash("You do not have permission to access this page.", "danger")
+                return redirect(url_for('shop'))
+            return f(*args, **kwargs)
+        return decorated_function
+    return wrapper
 
 @app.route('/')
 def home():
@@ -39,6 +68,7 @@ def product_detail(product_id):
 
 
 @app.route('/cart')
+@login_required
 def cart():
     user_id = session.get('user_id')
     if not user_id:
@@ -50,6 +80,7 @@ def cart():
     return render_template('cart.html', cart=items, total=total)
 
 @app.route('/add_to_cart/<int:product_id>', methods=['POST'])
+@login_required
 def add_to_cart(product_id):
     user_id = session.get('user_id')
     if not user_id:
@@ -61,6 +92,7 @@ def add_to_cart(product_id):
     return redirect(url_for('shop'))
 
 @app.route('/remove_from_cart/<int:product_id>', methods=['POST'])
+@login_required
 def remove_from_cart(product_id):
     user_id = session.get('user_id')
     if not user_id:
@@ -72,6 +104,7 @@ def remove_from_cart(product_id):
     return redirect(url_for('cart'))
 
 @app.route('/checkout')
+@login_required
 def checkout():
     user_id = session.get('user_id')
     if not user_id:
