@@ -20,8 +20,22 @@
 
         <p class="product-description">{{ product.description }}</p>
 
-        <!-- ADD TO CART -->
+        {% if session.get('role') in ['admin','Admin'] or product.seller_id == session.get('user_id') %}
+            <!-- DELETE PRODUCT (POST ONLY) -->
+            <form method="POST" action="{{ url_for('delete_product', product_id=product.id) }}" style="display:inline;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit">Delete Product</button>
+            </form>
+
+            <!-- EDIT PRODUCT (GET OK) -->
+            <form method="GET" action="{{ url_for('edit_product', product_id=product.id) }}" style="display:inline;">
+                <button type="submit">Edit</button>
+            </form>
+        {% endif %}
+
+        <!-- ADD TO CART (POST) -->
         <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="btn-add-cart">Add to Cart</button>
         </form>
     </div>
@@ -43,7 +57,7 @@
                 </div>
 
                 <div class="review-text">
-                    {{ review.content | safe }}
+                    {{ review.content }}
                 </div>
 
                 {% if review.image_url %}
@@ -60,12 +74,24 @@
     {% endif %}
 
 
-    <!-- ADD A REVIEW (ONLY IF LOGGED IN AND USER HAS BOUGHT THE PRODUCT) -->
+    <!-- ADD A REVIEW (ONLY IF LOGGED IN) -->
     {% if session.get('user_id') %}
         <div class="review-form">
             <h4>Leave a Review</h4>
 
-            <form action="{{ url_for('add_review', product_id=product.id) }}" method="POST" enctype="multipart/form-data">
+            <!-- Post review back to product_detail -->
+            <form action="{{ url_for('product_detail', product_id=product.id) }}" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <label for="rating">Rating:</label>
+                <select name="rating" id="rating">
+                    <option value="5">5 - Excellent</option>
+                    <option value="4">4 - Good</option>
+                    <option value="3">3 - Average</option>
+                    <option value="2">2 - Poor</option>
+                    <option value="1">1 - Terrible</option>
+                </select>
+
                 <textarea name="content" placeholder="Write your review..." required></textarea>
 
                 <label>Upload an image (optional):</label><br>

@@ -3,17 +3,46 @@
 
 {% block content %}
 <h1>Admin Dashboard</h1>
+
 <h2>Users</h2>
 <ul>
-    {% for username, info in users.items() %}
-        <li>{{ username }} - Role: {{ info['role'] }}</li>
-    {% endfor %}
+  {% for u in users %}
+    <li>
+      {{ u.username }} ({{ u.email }}) - Role: {{ u.role }} - Suspended: {{ u.is_suspended }}
+
+      {% if not u.is_suspended %}
+        <!-- SUSPEND -->
+        <form method="POST" action="{{ url_for('suspend_user', user_id=u.id) }}" style="display:inline;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit">Suspend</button>
+        </form>
+      {% else %}
+        <!-- UNSUSPEND -->
+        <form method="POST" action="{{ url_for('unsuspend_user', user_id=u.id) }}" style="display:inline;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit">Unsuspend</button>
+        </form>
+      {% endif %}
+    </li>
+  {% endfor %}
 </ul>
 
 <h2>Products</h2>
 <ul>
-    {% for product in products %}
-        <li>{{ product['name'] }} - ${{ product['price'] }}</li>
-    {% endfor %}
+  {% for p in products %}
+    <li>
+      {{ p.name }} by {{ p.seller_id }} - ${{ p.price }} - Inventory: {{ p.inventory }}
+
+      <!-- DELETE PRODUCT -->
+      <form method="POST" action="{{ url_for('delete_product', product_id=p.id) }}" style="display:inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit">Delete</button>
+      </form>
+
+      <!-- EDIT PRODUCT -->
+      <a href="{{ url_for('edit_product', product_id=p.id) }}">Edit</a>
+    </li>
+  {% endfor %}
 </ul>
-{% endblock%}
+
+{% endblock %}

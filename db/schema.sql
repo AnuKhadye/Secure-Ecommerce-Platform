@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS reviews (
     user_id INTEGER NOT NULL,
     product_id INTEGER NOT NULL,
     content TEXT NOT NULL,                  
-    image_url TEXT,                         
+    image_url TEXT,     
+    rating INTEGER DEFAULT 5,             
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE

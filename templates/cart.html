@@ -19,7 +19,9 @@
           Price: ${{ item.price }}<br>
           Subtotal: ${{ item.price * item.quantity }}
 
+          <!-- REMOVE FROM CART (POST + CSRF) -->
           <form action="{{ url_for('remove_from_cart', product_id=item.id) }}" method="POST" style="display:inline;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit">Remove</button>
           </form>
         </li>
