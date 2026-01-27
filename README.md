@@ -1,11 +1,4 @@
 # Secure E-Commerce Platform (Flask)
-
-A security-focused e-commerce web application built in Python using Flask, demonstrating secure-by-design principles, threat modelling, and mitigation of common web vulnerabilities.
-
-This project was developed as part of the **6000CMD – Security** module and is included here as a **portfolio project** to showcase secure software engineering skills.
-
----
-
 ## Project Overview
 
 This application simulates a small online retail platform supporting:
