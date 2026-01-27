@@ -76,14 +76,14 @@ The application successfully mitigates key OWASP Top 10 risks.
 ---
 
 ## Project Structure
-
-- /static/        : CSS and assets
-- /templates/     : Jinja2 HTML templates
-- /db/            : SQLite database files
-- app.py          : Main Flask application
-- forms.py        : Form definitions
-- database.py     : Database access logic
-
+```
+/static/        : CSS and assets
+/templates/     : Jinja2 HTML templates
+/db/            : SQLite database files
+app.py          : Main Flask application
+forms.py        : Form definitions
+database.py     : Database access logic
+```
 
 ---
 
