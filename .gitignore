@@ -1,3 +1,24 @@
+# Virtual environments
 venv/
-Invoke-WebRequest -Uri https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore -OutFile .gitignore
-Add-Content .gitignore "`n.env`n*.db`ndatabase.db"
+.venv/
+env/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment / secrets
+.env
+.env.local
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
