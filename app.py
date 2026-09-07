@@ -3,18 +3,30 @@ from forms import RegisterForm, LoginForm, SetUserNameForm
 from db.database import Database
 from functools import wraps
 from datetime import timedelta
+import os
 import uuid
 from flask_wtf import CSRFProtect
 from flask_wtf.csrf import generate_csrf
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
-app.secret_key = 'SecretKey123'
+IS_DEVELOPMENT = os.environ.get("FLASK_ENV") == "development"
+
+app.secret_key = os.environ.get("SECRET_KEY")
+if not app.secret_key:
+    raise RuntimeError(
+        "SECRET_KEY is not set. Copy .env.example to .env and generate a value with:\n"
+        '  python -c "import secrets; print(secrets.token_hex(32))"'
+    )
+
 app.permanent_session_lifetime = timedelta(minutes=30)
 app.config.update(
-    SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SAMESITE='Lax',
-    SESSION_COOKIE_SECURE=False  # True if HTTPS
+    SESSION_COOKIE_HTTPONLY=True,      
+    SESSION_COOKIE_SAMESITE='Lax',     
+    SESSION_COOKIE_SECURE=not IS_DEVELOPMENT,  
 )
 
 # CSRF protection
@@ -334,4 +346,4 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=IS_DEVELOPMENT)

@@ -1,2 +1,3 @@
-# ---- Virtual Environment ----
 venv/
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore -OutFile .gitignore
+Add-Content .gitignore "`n.env`n*.db`ndatabase.db"
