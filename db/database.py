@@ -168,7 +168,7 @@ class Database:
     # USERS
     # -------------------------------------------------
     def add_user(self, username, password, email, role='user'):
-        hashed_pw = generate_password_hash(password)
+        hashed_pw = generate_password_hash(password, method="pbkdf2:sha256")
         try:
             with self.connect() as conn:
                 conn.execute(
