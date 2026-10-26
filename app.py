@@ -5,6 +5,7 @@ from functools import wraps
 from datetime import timedelta
 import os
 import uuid
+import bleach
 from flask_wtf import CSRFProtect
 from flask_wtf.csrf import generate_csrf
 from dotenv import load_dotenv
@@ -198,7 +199,7 @@ def product_detail(product_id):
             flash("You must be logged in to review.", "warning")
             return redirect(url_for('login'))
 
-        content = request.form.get('content')
+        content = bleach.clean(request.form.get('content') or '', tags=[], strip=True)
         rating = int(request.form.get('rating', 5))
 
         # image handling: for now, ignore upload or add later

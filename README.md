@@ -42,7 +42,7 @@ The primary focus of the project is **security**, not scale or UI polish. Indust
 
 ### Input Validation & Data Protection
 - Parameterised SQL queries (SQL injection mitigation)
-- HTML sanitisation of user-generated content using Bleach
+- Review text is sanitised with Bleach (all HTML tags are removed before saving)
 - Jinja2 auto-escaping
 - MIME-type validation for uploads
 
@@ -87,6 +87,8 @@ cd Secure-Ecommerce-Platform
 pip install -r requirements.txt
 python app.py
 ```
+
+Development tools (pytest, Bandit): `pip install -r requirements-dev.txt`, then `python -m pytest tests`.
 
 Then open:
 http://localhost:5000
