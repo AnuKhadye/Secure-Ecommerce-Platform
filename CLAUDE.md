@@ -18,7 +18,7 @@ Flask web app (Customer / Seller / Admin roles) built as a security-focused cour
 - Set `SECRET_KEY` (the app refuses to start without it). Generate one with: `python -c "import secrets; print(secrets.token_hex(32))"`
 - Local development: set `FLASK_ENV=development` (this turns on debug and turns off the Secure cookie flag), then `python app.py`
 - The SQLite database is created automatically on first import. It is git-ignored; never commit `*.db`, `.env` or `*.pyc`.
-- There is no test suite yet. Until one exists, verify changes by running the app and exercising the changed route manually, and run `bandit -r . -x ./venv` after security-relevant changes.
+- Dev tools: `pip install -r requirements-dev.txt` (pytest, Bandit). Run the tests with `python -m pytest tests`. The suite is small (review route, password hashing), so also exercise changed routes manually, and run `bandit -r . -x ./venv,./tests` after security-relevant changes.
 
 ## Rules
 1. **Claims must match code.** If you change behaviour, update the README (and `FIXES.md`) in the same commit. If a README claim is false, fix the code or delete the claim; never leave it.
