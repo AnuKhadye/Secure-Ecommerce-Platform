@@ -44,7 +44,6 @@ The primary focus of the project is **security**, not scale or UI polish. Indust
 - Parameterised SQL queries (SQL injection mitigation)
 - Review text is sanitised with Bleach (all HTML tags are removed before saving)
 - Jinja2 auto-escaping
-- MIME-type validation for uploads
 
 ### Request Integrity
 - CSRF tokens on all state-changing routes

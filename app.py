@@ -202,10 +202,7 @@ def product_detail(product_id):
         content = bleach.clean(request.form.get('content') or '', tags=[], strip=True)
         rating = int(request.form.get('rating', 5))
 
-        # image handling: for now, ignore upload or add later
-        image_url = None  # or build path if you implement uploads
-
-        db.add_review(session['user_id'], product_id, content, rating, image_url)
+        db.add_review(session['user_id'], product_id, content, rating)
 
 
         flash("Review submitted!", "success")

@@ -80,7 +80,7 @@
             <h4>Leave a Review</h4>
 
             <!-- Post review back to product_detail -->
-            <form action="{{ url_for('product_detail', product_id=product.id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ url_for('product_detail', product_id=product.id) }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <label for="rating">Rating:</label>
@@ -93,9 +93,6 @@
                 </select>
 
                 <textarea name="content" placeholder="Write your review..." required></textarea>
-
-                <label>Upload an image (optional):</label><br>
-                <input type="file" name="image">
 
                 <button type="submit">Submit Review</button>
             </form>
