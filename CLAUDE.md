@@ -37,6 +37,14 @@ Flask web app (Customer / Seller / Admin roles) built as a security-focused cour
 4. Update README wording if it described this behaviour.
 5. Tick the item in `FIXES.md`, then commit with a message that names the item ID (for example `EC-1: use PBKDF2 for password hashing`).
 
+## Skills to use
+- Bug, error or failing test: `mattpocock-skills:diagnosing-bugs`.
+- Implementing a FIXES.md item or any behaviour change: `mattpocock-skills:tdd`.
+- Checking a change works in the real app: `run`.
+- Before committing security-relevant changes: `security-review`, then `code-review`.
+- Writing a PR body: `mattpocock-skills:pr`.
+- Stress-testing a plan or README claim: `grill-me`.
+
 ## Owner preferences
 - British spelling. Concise explanations. Ask before deleting files or rewriting history.
 
