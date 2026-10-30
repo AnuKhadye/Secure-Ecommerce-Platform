@@ -43,6 +43,7 @@ The primary focus of the project is **security**, not scale or UI polish. Indust
 ### Input Validation & Data Protection
 - Parameterised SQL queries (SQL injection mitigation)
 - Review text is sanitised with Bleach (all HTML tags are removed before saving)
+- Review input is validated server-side: rating must be a whole number from 1 to 5, text must not be empty and is limited to 2,000 characters
 - Jinja2 auto-escaping
 
 ### Request Integrity

@@ -185,6 +185,8 @@ def shop():
     products = db.get_all_products()
     return render_template('shop.html', products=products)
 
+MAX_REVIEW_LENGTH = 2000
+
 @app.route('/product/<int:product_id>', methods=['GET', 'POST'])
 def product_detail(product_id):
     product = db.get_product(product_id)
@@ -199,8 +201,21 @@ def product_detail(product_id):
             flash("You must be logged in to review.", "warning")
             return redirect(url_for('login'))
 
-        content = bleach.clean(request.form.get('content') or '', tags=[], strip=True)
-        rating = int(request.form.get('rating', 5))
+        raw_content = (request.form.get('content') or '').strip()
+        if len(raw_content) > MAX_REVIEW_LENGTH:
+            flash(f"Review must be {MAX_REVIEW_LENGTH} characters or fewer.", "warning")
+            return redirect(url_for('product_detail', product_id=product_id))
+        content = bleach.clean(raw_content, tags=[], strip=True).strip()
+        if not content:
+            flash("Review cannot be empty.", "warning")
+            return redirect(url_for('product_detail', product_id=product_id))
+        try:
+            rating = int(request.form.get('rating', 5))
+        except ValueError:
+            rating = None
+        if rating is None or not 1 <= rating <= 5:
+            flash("Rating must be a whole number from 1 to 5.", "warning")
+            return redirect(url_for('product_detail', product_id=product_id))
 
         db.add_review(session['user_id'], product_id, content, rating)
 
